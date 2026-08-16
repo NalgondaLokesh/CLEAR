@@ -308,4 +308,4 @@ For questions, issues, or contributions, please open an issue in the repository 
 
 ---
 
-**Note**: CLEAR was developed as part of a cloud removal hackathon. The models are trained on specific satellite imagery datasets and may perform differently on other types of aerial or satellite images.
+**Note**: The models are trained on specific satellite imagery datasets and may perform differently on other types of aerial or satellite images.
