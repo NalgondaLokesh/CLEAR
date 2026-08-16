@@ -36,10 +36,14 @@ CLEAR implements a deep learning solution for removing clouds from satellite ima
 
 ## 📊 Dataset
 
+### Dataset Download
+The RICE datasets used for training can be downloaded from:
+**[Google Drive - RICE Datasets](https://drive.google.com/drive/folders/1qlAi-33iSQyhBXHumpQQRv_ojq67JkqQ?usp=drive_link)**
+
 ### RICE1 Dataset
 - **Images**: 500 paired cloudy-clear images
 - **Split**: 400 training, 100 testing
-- **Structure**: 
+- **Structure**:
   - `cloudy_image/` - Cloudy satellite images
   - `ground_truth/` - Corresponding clear images
 
@@ -268,5 +272,6 @@ For questions, issues, or contributions, please open an issue in the repository 
 
 ---
 
-**Note**: CLEAR was developed as part of a cloud removal hackathon. The models are trained on specific satellite imagery datasets and may perform differently on other types of aerial or satellite images.#   C L E A R  
+**Note**: CLEAR was developed as part of a cloud removal hackathon. The models are trained on specific satellite imagery datasets and may perform differently on other types of aerial or satellite images.#   C L E A R 
+ 
  

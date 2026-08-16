@@ -1,0 +1,11 @@
+Cloud Removal Model Checkpoints
+========================================
+
+Training completed: 2026-08-16 13:46:48
+Model: U-Net Generator with PatchGAN
+Input size: 256x256
+Device trained on: cuda
+
+Files:
+  - RICE2 Best.pth (159.6 MB)
+  - RICE1 Best.pth (159.6 MB)
