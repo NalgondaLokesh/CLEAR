@@ -1,311 +1,480 @@
-# 🌤️ CLEAR - Cloud-Less Earth Observation & Reconstruction
+# CLEAR - Cloud-Less Earth Observation & Reconstruction
 
-An AI-powered cloud removal system for satellite imagery using U-Net GAN architecture with transfer learning on RICE datasets.
+Modern AI-powered cloud removal system for satellite imagery using U-Net GAN architecture with multiple interface options.
 
----
+## Overview
 
-## 📋 Table of Contents
+CLEAR transforms cloudy satellite imagery into clear, actionable data using advanced deep learning techniques. The project provides multiple interface options for cloud removal inference:
 
-- [Project Overview](#project-overview)
-- [Key Features](#key-features)
-- [Architecture](#architecture)
-- [Dataset](#dataset)
-- [Getting Started](#getting-started)
-- [Usage](#usage)
-- [Project Structure](#project-structure)
-- [Performance](#performance)
-- [Applications](#applications)
-- [Troubleshooting](#troubleshooting)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
-
----
-
-## 📋 Project Overview
-
-CLEAR implements a deep learning solution for removing clouds from satellite images using Generative Adversarial Networks (GANs). The system uses a U-Net generator with skip connections and a PatchGAN discriminator, trained on the RICE1 and RICE2 datasets through a transfer learning approach.
+- **FastAPI Backend + React Frontend**: A modern web application with a React.js frontend and FastAPI backend for production deployment
+- **Streamlit Interface**: A standalone Python application for quick local experimentation and model testing
 
 ### Key Features
 
-- **🏗️ U-Net GAN Architecture**: Generator with skip connections for precise image-to-image translation
-- **🔄 Transfer Learning**: Pre-trained on RICE1, fine-tuned on RICE2 dataset
-- **⚡ Real-time Inference**: Streamlit web interface for interactive cloud removal
-- **📈 High Performance**: Achieves competitive PSNR and SSIM metrics
-- **📦 Batch Processing**: Support for processing multiple images
+- **AI-Powered Cloud Removal**: U-Net Generator architecture trained on satellite imagery datasets
+- **Multiple Interface Options**: Choose between a modern React web app or a Streamlit interface
+- **Model Support**: Pre-trained models (RICE1, RICE2) for diverse cloud patterns
+- **Real-time Processing**: Fast image processing with GPU acceleration support
+- **Visual Comparison**: Interactive before/after image comparison tools
+- **Responsive Design**: React frontend works seamlessly on desktop, tablet, and mobile
 
----
-
-## 🏗️ Architecture
-
-### Model Components
-
-#### U-Net Generator (41.8M parameters)
-- **Encoder**: 6 downsampling convolutional blocks
-- **Bottleneck**: Central processing layer
-- **Decoder**: 6 upsampling blocks with skip connections
-- **Output**: Tanh activation for final image generation
-
-#### PatchGAN Discriminator (2.8M parameters)
-- 5-layer convolutional network
-- Patch-based discrimination for realistic texture generation
-- Operates on concatenated cloudy and generated images
-
-### Training Pipeline
-
-| Component | Configuration |
-|-----------|---------------|
-| **Loss Functions** | BCE loss for adversarial training + L1 loss for pixel-level accuracy |
-| **Optimizers** | Adam with β=(0.5, 0.999) |
-| **Learning Rate** | 2e-4 |
-| **L1 Lambda** | 100 for balancing adversarial and reconstruction losses |
-
----
-
-## 📊 Dataset
-
-### Dataset Download
-
-The RICE datasets used for training can be downloaded from:
-**[Google Drive - RICE Datasets](https://drive.google.com/drive/folders/1qlAi-33iSQyhBXHumpQQRv_ojq67JkqQ?usp=drive_link)**
-
-### Dataset Details
-
-#### RICE1 Dataset
-- **Images**: 500 paired cloudy-clear images
-- **Split**: 400 training, 100 testing
-- **Structure**:
-  - `cloudy_image/` - Cloudy satellite images
-  - `ground_truth/` - Corresponding clear images
-
-#### RICE2 Dataset
-- **Images**: 736 paired images
-- **Usage**: Transfer learning target dataset
-- **Structure**:
-  - `cloud/` - Cloudy images
-  - `clear/` - Clear images
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Python 3.8+
-- CUDA-capable GPU (recommended for training)
-- 4GB+ GPU memory
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/NalgondaLokesh/CLEAR.git
-   cd CLEAR
-   ```
-
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Download Model Weights** (Required for inference)
-   - Model files are managed via Git LFS and will be downloaded automatically
-   - Or manually download from the repository's `models/` directory
-   - Required files:
-     - `RICE1_Best.pth` (159.6 MB)
-     - `RICE2_Best.pth` (159.6 MB)
-
-### Requirements
-
-```
-streamlit==1.28.0
-torch==2.0.1
-torchvision==0.15.2
-Pillow==10.0.0
-numpy==1.24.3
-plotly==5.17.0
-opencv-python==4.8.0.74
-```
-
----
-
-## 💻 Usage
-
-### Running the Inference App
-
-1. **Ensure models are available**
-   - Place trained `.pth` files in the `models/` directory
-   - Files should be named: `RICE1_Best.pth` and `RICE2_Best.pth`
-
-2. **Launch the Streamlit app**
-   ```bash
-   streamlit run app.py
-   ```
-
-3. **Access the interface**
-   - Open your browser to `http://localhost:8501`
-
-4. **Use the app**
-   - Select a model from the sidebar (RICE1 or RICE2)
-   - Upload a cloudy satellite image (PNG, JPG, JPEG)
-   - Click "Remove Clouds" to process
-   - Download the cloud-free result
-
-### Training from Scratch
-
-To train the model from scratch, use the provided Jupyter notebook:
-
-```bash
-jupyter notebook training_notebook/cloud_removal_project_pipeline.ipynb
-```
-
-#### Training Stages
-
-1. **Stage 1**: Train on RICE1 dataset (30 epochs)
-2. **Stage 2**: Transfer learning on RICE2 dataset (20 epochs)
-3. **Stage 3**: Inference and batch processing
-
-#### Training Configuration
-
-| Parameter | Value |
-|-----------|-------|
-| **Batch Size** | 8 (training), 4 (testing) |
-| **Image Size** | 256×256 |
-| **Epochs** | 30 (RICE1), 20 (RICE2) |
-| **Data Augmentation** | Enabled for training |
-
----
-
-## 📁 Project Structure
+## Architecture
 
 ```
 CLEAR/
-├── app.py                          # Streamlit inference interface
-├── requirements.txt                # Python dependencies
-├── README.md                       # This file
-├── .gitignore                      # Git ignore rules
-├── .gitattributes                  # Git LFS configuration
-├── models/                         # Trained model checkpoints
-│   ├── RICE1_Best.pth             # Best model from RICE1 training
-│   ├── RICE2_Best.pth             # Best model from RICE2 training
-│   └── model_info.txt             # Model metadata
-└── training_notebook/             # Training pipeline
-    └── cloud_removal_project_pipeline.ipynb
+├── backend/                 # FastAPI backend application
+│   ├── app/
+│   │   ├── main.py         # FastAPI application entry point
+│   │   ├── api/            # API routes
+│   │   │   └── routes.py   # Health, models, process endpoints
+│   │   ├── models/         # Model architecture and loader
+│   │   │   ├── model_loader.py
+│   │   │   └── unet_generator.py
+│   │   ├── services/       # Business logic
+│   │   │   └── cloud_removal_service.py
+│   │   ├── schemas/        # Pydantic schemas
+│   │   │   └── requests.py
+│   │   └── utils/          # Utility functions
+│   │       └── image_processing.py
+│   ├── models/             # Trained model weights
+│   │   ├── RICE1_Best.pth
+│   │   └── RICE2_Best.pth
+│   ├── requirements.txt    # Backend dependencies
+│   └── .env                # Backend environment variables
+│
+├── frontend/                 # React.js frontend application
+│   ├── src/
+│   │   ├── components/     # React components
+│   │   │   ├── Common/     # Shared components (Button, LoadingSpinner, ModelSelector)
+│   │   │   ├── Layout/     # Layout components (Header, Footer, Sidebar)
+│   │   │   ├── Results/    # Result display components
+│   │   │   └── Upload/     # Upload components
+│   │   ├── pages/          # Page components (Home, About, Documentation)
+│   │   ├── services/       # API integration
+│   │   │   └── api.js
+│   │   ├── hooks/          # Custom React hooks
+│   │   ├── utils/          # Utility functions
+│   │   ├── styles/         # Global styles
+│   │   ├── App.jsx         # Main React application
+│   │   └── index.js        # Entry point
+│   ├── public/             # Static assets
+│   ├── package.json        # Frontend dependencies
+│   └── .env                # Frontend environment variables
+│
+├── app.py                   # Streamlit interface (alternative to React)
+├── README.md
+└── pitch.md
 ```
 
----
+## System Architecture
 
-## 📈 Performance
-
-### Training Results
-
-#### RICE1 Dataset (30 epochs)
-- **Best PSNR**: ~25+ dB
-- **Best SSIM**: ~0.68+
-- **Training samples**: 400
-- **Test samples**: 100
-
-#### RICE2 Dataset (20 epochs with transfer learning)
-- **Performance**: Improved on diverse cloud patterns
-- **Generalization**: Better on new satellite imagery
-- **Processing**: Batch capability for 736 images
-
-### Metrics
-
-| Metric | Description | Typical Value |
-|--------|-------------|---------------|
-| **PSNR** | Peak Signal-to-Noise Ratio | 25+ dB |
-| **SSIM** | Structural Similarity Index | 0.68+ |
-| **Processing Time** | GPU inference time | 1-2 seconds/image |
-
----
-
-## 🎯 Applications
-
-- **🛰️ Satellite Imagery Analysis**: Remove clouds for better analysis
-- **🌍 Environmental Monitoring**: Clear views for change detection
-- **🌾 Agricultural Assessment**: Monitor crop health through clouds
-- **🚨 Disaster Response**: Quick assessment of affected areas
-- **🏗️ Urban Planning**: Clear imagery for development planning
-
----
-
-## 🛠️ Technical Details
-
-### Image Preprocessing
-
-- Resize to 256×256 pixels
-- Normalize to [-1, 1] range
-- RGB color space
-- Data augmentation for training (optional)
-
-### Model Inference
-
-```python
-# Load model
-model = UNetGenerator(in_channels=3, out_channels=3)
-model.load_state_dict(torch.load('models/RICE1_Best.pth'))
-model.eval()
-
-# Process image
-with torch.no_grad():
-    output = model(preprocessed_image)
-    result = denormalize(output)
+```mermaid
+flowchart TD
+    A[User Interface] --> B{Interface Choice}
+    B -->|React Web App| C[React Frontend]
+    B -->|Streamlit| D[Streamlit App]
+    C --> E[FastAPI Backend]
+    D --> F[Direct Model Access]
+    E --> G[Model Loader]
+    F --> G
+    G --> H[U-Net Generator]
+    H --> I[Cloud Removal Service]
+    I --> J[Image Processing]
+    J --> K[Processed Image]
+    K --> A
 ```
 
----
+## Technology Stack
 
-## 🐛 Troubleshooting
+### Backend
+- **FastAPI 0.104.1**: Modern Python web framework
+- **PyTorch 2.0.1**: Deep learning framework
+- **Uvicorn 0.24.0**: ASGI server
+- **Pillow 10.0.0**: Image processing
+- **OpenCV 4.8.0.74**: Computer vision utilities
+- **NumPy 1.24.3**: Numerical computing
+- **scikit-image 0.22.0**: Image processing algorithms
+- **python-dotenv 1.0.0**: Environment variable management
+- **pydantic 2.5.0**: Data validation
+- **aiofiles 23.2.1**: Async file operations
 
-### Common Issues
+### Frontend (React)
+- **React 18.2.0**: UI framework
+- **React Router 6.20.0**: Client-side routing
+- **Tailwind CSS 3.3.6**: Utility-first styling
+- **Axios 1.6.2**: HTTP client
+- **Framer Motion 10.16.16**: Animations
+- **React Dropzone 14.2.3**: File upload
+- **React Hot Toast 2.4.1**: Notifications
+- **React Compare Image 3.1.0**: Image comparison
+- **React Loader Spinner 5.4.5**: Loading indicators
 
-#### Model not loading
-- **Solution**: Ensure `.pth` files are in the `models/` directory
-- **Check**: PyTorch version compatibility
-- **Verify**: File integrity (159.6 MB expected size)
+### Streamlit Interface
+- **Streamlit**: Python web framework for ML apps
+- **PyTorch**: Deep learning framework
+- **Pillow**: Image processing
 
-#### Out of memory errors
-- **Solution**: Reduce batch size in training
-- **Alternative**: Use smaller image dimensions
-- **Option**: Enable gradient checkpointing
+### AI/ML
+- **U-Net Generator**: 41.8M parameters, encoder-decoder architecture with skip connections
+- **Transfer Learning**: RICE1 → RICE2 training strategy
+- **PyTorch**: Model implementation and inference
 
-#### Poor output quality
-- **Check**: Input image is RGB format
-- **Verify**: Image resolution (256×256 optimal)
-- **Try**: Different trained models (RICE1 vs RICE2)
+## Prerequisites
 
----
+- **Python**: 3.8 or higher
+- **Node.js**: 16+ and npm (for React frontend)
+- **CUDA-capable GPU**: Recommended for faster inference (optional, CPU fallback available)
+- **4GB+ GPU memory**: Recommended for GPU inference (optional)
 
-## 📄 License
+## Installation and Setup
+
+### Option 1: React Frontend + FastAPI Backend
+
+#### Backend Setup
+
+```bash
+cd backend
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure environment variables
+# Edit .env file with your settings
+# MODEL_PATH=./models
+# RICE1_MODEL=RICE1_Best.pth
+# RICE2_MODEL=RICE2_Best.pth
+# MAX_IMAGE_SIZE=1024
+# CUDA_DEVICE=0
+# API_HOST=0.0.0.0
+# API_PORT=8000
+```
+
+#### Frontend Setup
+
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Configure environment variables
+# Edit .env file with your settings
+# REACT_APP_API_URL=http://localhost:8000
+# REACT_APP_API_TIMEOUT=30000
+# REACT_APP_MAX_FILE_SIZE=10485760
+```
+
+#### Running the Application
+
+**Start Backend:**
+```bash
+cd backend
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+**Start Frontend:**
+```bash
+cd frontend
+npm start
+```
+
+**Access the Application:**
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8000
+- API Documentation: http://localhost:8000/docs
+
+### Option 2: Streamlit Interface
+
+The Streamlit interface provides a standalone alternative that doesn't require the FastAPI backend.
+
+```bash
+# Install dependencies (including streamlit)
+pip install streamlit torch torchvision pillow numpy
+
+# Ensure model files are in the models/ directory
+# Place RICE1_Best.pth and/or RICE2_Best.pth in the models/ folder
+
+# Run the Streamlit app
+streamlit run app.py
+```
+
+The Streamlit interface will open automatically in your browser.
+
+## Environment Variables
+
+### Backend Environment Variables
+
+| Variable | Required | Purpose | Default |
+|----------|----------|---------|---------|
+| `MODEL_PATH` | No | Path to model weights directory | `./models` |
+| `RICE1_MODEL` | No | Filename for RICE1 model | `RICE1_Best.pth` |
+| `RICE2_MODEL` | No | Filename for RICE2 model | `RICE2_Best.pth` |
+| `MAX_IMAGE_SIZE` | No | Maximum image dimension | `1024` |
+| `CUDA_DEVICE` | No | CUDA device index | `0` |
+| `API_HOST` | No | API server host | `0.0.0.0` |
+| `API_PORT` | No | API server port | `8000` |
+
+### Frontend Environment Variables
+
+| Variable | Required | Purpose | Default |
+|----------|----------|---------|---------|
+| `REACT_APP_API_URL` | No | Backend API URL | `http://localhost:8000` |
+| `REACT_APP_API_TIMEOUT` | No | API request timeout (ms) | `30000` |
+| `REACT_APP_MAX_FILE_SIZE` | No | Maximum upload file size (bytes) | `10485760` |
+
+## API Documentation
+
+### Base URL
+- Local Development: `http://localhost:8000`
+
+### Endpoints
+
+#### Health Check
+```http
+GET /api/health
+```
+
+**Response:**
+```json
+{
+  "models_loaded": true,
+  "device": "cuda"
+}
+```
+
+#### Get Available Models
+```http
+GET /api/models
+```
+
+**Response:**
+```json
+{
+  "models": ["RICE2"],
+  "active_model": "RICE2"
+}
+```
+
+#### Process Image
+```http
+POST /api/process
+Content-Type: multipart/form-data
+
+image: <file>
+model: "RICE1" | "RICE2"
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "processed_image": "base64_encoded_image",
+  "metrics": {
+    "psnr": 25.0,
+    "ssim": 0.68,
+    "processing_time": 1.23,
+    "output_size": "256x256"
+  },
+  "model_used": "RICE2"
+}
+```
+
+#### Batch Process Images
+```http
+POST /api/batch-process
+Content-Type: multipart/form-data
+
+images: [<file1>, <file2>, ...]
+model: "RICE1" | "RICE2"
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "results": [
+    {
+      "filename": "image1.jpg",
+      "success": true,
+      "processed_image": "base64_encoded_image",
+      "metrics": { ... }
+    }
+  ]
+}
+```
+
+## Model Architecture
+
+### U-Net Generator
+
+The U-Net Generator uses an encoder-decoder architecture with skip connections:
+
+- **Input**: 256×256×3 RGB image
+- **Encoder**: 6 downsampling blocks (D1-D6) with LeakyReLU activations
+- **Bottleneck**: Central processing block with ReLU activation
+- **Decoder**: 6 upsampling blocks (U1-U6) with ReLU activations and dropout
+- **Skip Connections**: Concatenation-based connections from encoder to decoder
+- **Output**: 256×256×3 RGB image with Tanh activation
+- **Parameters**: 41.8M
+
+### Training Configuration
+
+| Parameter | Value |
+|-----------|-------|
+| Batch Size | 8 (training), 4 (testing) |
+| Learning Rate | 2e-4 |
+| Beta Values | (0.5, 0.999) |
+| L1 Lambda | 100 |
+| Epochs | 30 (RICE1), 20 (RICE2) |
+| Image Size | 256×256 |
+
+### Training Data
+
+- **RICE1 Dataset**: 500 paired images (400 train, 100 test)
+- **RICE2 Dataset**: 736 paired images for transfer learning
+
+## Usage
+
+### React Frontend
+
+1. Start the backend and frontend as described in the installation section
+2. Open http://localhost:3000 in your browser
+3. Upload a cloudy satellite image
+4. Select a model (RICE1 or RICE2)
+5. Click "Remove Clouds" to process the image
+6. View the result and download the cloud-free image
+
+### Streamlit Interface
+
+1. Run `streamlit run app.py`
+2. The interface will open in your browser
+3. Select a model from the sidebar
+4. Upload a cloudy satellite image
+5. Click "Remove Clouds" to process the image
+6. View and download the result
+
+## End-to-End Workflow
+
+### React + FastAPI Workflow
+
+1. **Image Upload**: User uploads image via React frontend
+2. **Validation**: Frontend validates file type and size
+3. **API Request**: Frontend sends image to `/api/process` endpoint
+4. **Model Loading**: Backend loads selected model (cached after first load)
+5. **Preprocessing**: Image is resized to 256×256 and normalized to [-1, 1]
+6. **Inference**: U-Net Generator processes the image
+7. **Postprocessing**: Output is denormalized and converted to uint8
+8. **Metrics Calculation**: Processing time and output size are recorded
+9. **Response**: Processed image (base64) and metrics returned to frontend
+10. **Display**: Frontend displays result with before/after comparison
+
+### Streamlit Workflow
+
+1. **Model Selection**: User selects model from sidebar
+2. **Model Loading**: Model is loaded and cached by Streamlit
+3. **Image Upload**: User uploads image via file uploader
+4. **Preprocessing**: Image is resized and normalized
+5. **Inference**: U-Net Generator processes the image
+6. **Postprocessing**: Output is denormalized and converted to uint8
+7. **Display**: Streamlit displays original and processed images side-by-side
+8. **Download**: User can download the processed image
+
+## Building for Production
+
+### Backend
+
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm run build
+# Serve the build/ directory with nginx or similar static hosting
+```
+
+## Troubleshooting
+
+### Backend Issues
+
+- **Model not loading**: Check that model files exist in `backend/models/` directory
+- **CUDA errors**: Verify GPU availability and CUDA installation. The system will fallback to CPU if CUDA is unavailable
+- **Port conflicts**: Change `API_PORT` in `.env` file
+- **Import errors**: Ensure all dependencies are installed via `pip install -r requirements.txt`
+
+### Frontend Issues
+
+- **API connection errors**: Verify backend is running and CORS settings allow the frontend origin
+- **Build errors**: Clear node_modules and reinstall: `rm -rf node_modules package-lock.json && npm install`
+- **Styling issues**: Verify Tailwind CSS configuration in `tailwind.config.js`
+
+### Common Solutions
+
+```bash
+# Clear frontend cache
+cd frontend
+rm -rf node_modules package-lock.json
+npm install
+
+# Reset Python environment
+cd backend
+rm -rf venv
+python -m venv venv
+# Activate venv (platform-specific)
+pip install -r requirements.txt
+```
+
+## Known Limitations
+
+- **Fixed Resolution**: Input images are resized to 256×256 for model inference
+- **RGB Only**: The model processes RGB images only (no multispectral support)
+- **Placeholder Metrics**: PSNR and SSIM values returned by the API are placeholders (actual metrics require ground truth images)
+- **Model Loading**: Backend loads RICE2 model by default; RICE1 must be explicitly configured if needed
+- **No Tests**: No automated test suite is currently configured
+- **No CI/CD**: No continuous integration or deployment workflows are configured
+
+## Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
 
 This project is developed for educational and research purposes. Please cite the original RICE dataset papers if used in research.
 
----
+**Note**: No formal LICENSE file is currently present in the repository. For licensing inquiries, please contact the repository maintainers.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
-- **RICE Dataset**: Researchers who created the RICE1 and RICE2 datasets
+- **RICE Dataset**: Researchers who created the RICE1 and RICE2 datasets for cloud removal research
 - **PyTorch**: Deep learning framework
-- **Streamlit**: Web interface framework
-- **GAN Architecture**: Based on pix2pix and CycleGAN concepts
+- **FastAPI**: Modern Python web framework
+- **React**: JavaScript library for building user interfaces
+- **Tailwind CSS**: Utility-first CSS framework
+- **Streamlit**: Python framework for ML applications
+
+## Contact
+
+For questions, issues, or contributions, please open an issue in the repository.
 
 ---
 
-## 📞 Contact
-
-For questions, issues, or contributions, please open an issue in the repository or contact the development team.
-
----
-
-## 🔄 Version History
-
-### v1.0 (2026-08-16)
-- ✅ U-Net GAN implementation
-- ✅ RICE1 and RICE2 trained models
-- ✅ Streamlit web interface with enhanced UI/UX
-- ✅ Complete training pipeline
-- ✅ Git LFS integration for large model files
-- ✅ Comprehensive documentation
-
----
-
-**Note**: The models are trained on specific satellite imagery datasets and may perform differently on other types of aerial or satellite images.
+**Built with ❤️ using React, FastAPI, PyTorch, and Streamlit**
