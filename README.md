@@ -387,6 +387,30 @@ jupyter notebook training_notebook/cloud_removal_project_pipeline.ipynb
 
 The notebook was originally designed for Google Colab with Google Drive integration, but can be adapted for local use by modifying the dataset paths.
 
+## Screenshots
+
+### React Frontend - Home Page
+
+![Home Page](Screenshots/Home.png)
+
+The home page provides the main interface for cloud removal:
+- Image upload via drag-and-drop or file browser
+- Model selection (RICE1 or RICE2)
+- Real-time processing with progress indicators
+- Before/after image comparison
+- Download processed images
+- Processing metrics display (PSNR, SSIM, processing time)
+
+### React Frontend - About Page
+
+![About Page](Screenshots/About.png)
+
+The about page provides:
+- Project overview and architecture
+- Model information and specifications
+- System status and GPU availability
+- Feature highlights and capabilities
+
 ### Training Notebook
 
 The complete training pipeline is available in `training_notebook/cloud_removal_project_pipeline.ipynb`, which includes:
