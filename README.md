@@ -326,21 +326,81 @@ The U-Net Generator uses an encoder-decoder architecture with skip connections:
 - **Output**: 256×256×3 RGB image with Tanh activation
 - **Parameters**: 41.8M
 
+### PatchGAN Discriminator
+
+- **Architecture**: 5-layer convolutional network
+- **Patch Size**: 30×30 (70×70 receptive field)
+- **Purpose**: Discriminate real vs fake at patch level
+- **Parameters**: 2.8M
+
 ### Training Configuration
 
-| Parameter | Value |
-|-----------|-------|
-| Batch Size | 8 (training), 4 (testing) |
-| Learning Rate | 2e-4 |
-| Beta Values | (0.5, 0.999) |
-| L1 Lambda | 100 |
-| Epochs | 30 (RICE1), 20 (RICE2) |
-| Image Size | 256×256 |
+| Parameter | RICE1 | RICE2 |
+|-----------|-------|-------|
+| **Dataset Size** | 500 images (400 train, 100 test) | 736 images (588 train, 148 test) |
+| **Batch Size** | 8 (train), 4 (test) | 8 (train), 4 (test) |
+| **Learning Rate** | 2e-4 | 5e-5 (fine-tuning) |
+| **Beta Values** | (0.5, 0.999) | (0.5, 0.999) |
+| **L1 Lambda** | 100 | 100 |
+| **Epochs** | 30 | 20 |
+| **Image Size** | 256×256 | 256×256 |
 
-### Training Data
+### Training Results
 
-- **RICE1 Dataset**: 500 paired images (400 train, 100 test)
-- **RICE2 Dataset**: 736 paired images for transfer learning
+#### RICE1 Model Performance
+
+- **Best PSNR**: 28.68 dB (Epoch 25)
+- **Best SSIM**: 0.8419 (Epoch 25)
+- **Final PSNR**: 28.29 dB (Epoch 30)
+- **Final SSIM**: 0.8087 (Epoch 30)
+- **Training Time**: ~30 epochs on Tesla T4 GPU
+
+#### RICE2 Model Performance (Transfer Learning)
+
+- **Best PSNR**: 29.36 dB (Epoch 13 and 20)
+- **Best SSIM**: 0.7848 (Epoch 20)
+- **Final PSNR**: 29.36 dB (Epoch 20)
+- **Final SSIM**: 0.7848 (Epoch 20)
+- **Training Time**: ~20 epochs on Tesla T4 GPU (with RICE1 pre-trained weights)
+
+**Note**: RICE2 was trained using transfer learning, initializing with RICE1 weights and fine-tuning on the larger RICE2 dataset with a lower learning rate.
+
+### Training Procedure
+
+The complete training pipeline is documented in `training_notebook/cloud_removal_project_pipeline.ipynb`, which includes:
+
+1. **Data Preparation**: Creating train/test splits from RICE1 and RICE2 datasets
+2. **Model Initialization**: U-Net Generator and PatchGAN Discriminator
+3. **Stage 1 Training**: Training on RICE1 dataset (30 epochs)
+4. **Stage 2 Fine-tuning**: Transfer learning on RICE2 dataset (20 epochs)
+5. **Evaluation**: PSNR and SSIM metrics calculation
+6. **Checkpointing**: Saving best models and training curves
+
+To run the training notebook:
+```bash
+# Install additional dependencies
+pip install scikit-image gradio albumentations
+
+# Open the notebook
+jupyter notebook training_notebook/cloud_removal_project_pipeline.ipynb
+```
+
+The notebook was originally designed for Google Colab with Google Drive integration, but can be adapted for local use by modifying the dataset paths.
+
+### Training Notebook
+
+The complete training pipeline is available in `training_notebook/cloud_removal_project_pipeline.ipynb`, which includes:
+
+- **Data Preparation**: Creating train/test splits from RICE1 and RICE2 datasets
+- **Model Implementation**: U-Net Generator and PatchGAN Discriminator
+- **Training Loop**: GAN training with adversarial and L1 losses
+- **Evaluation**: PSNR and SSIM metrics calculation
+- **Checkpointing**: Saving best models and training curves
+- **Inference**: Loading trained models for testing
+
+The notebook demonstrates the complete two-stage training process:
+1. **Stage 1**: Train on RICE1 dataset (30 epochs, LR=2e-4)
+2. **Stage 2**: Fine-tune on RICE2 dataset (20 epochs, LR=5e-5) with transfer learning from RICE1
 
 ## Usage
 
