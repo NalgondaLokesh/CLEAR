@@ -553,6 +553,9 @@ This project is developed for educational and research purposes. Please cite the
 
 ## Contact
 
+- **LinkedIn**: [Nalgonda Lokesh](https://www.linkedin.com/in/nalgondalokesh/)
+- **Portfolio**: [nalgondalokesh.me](https://nalgondalokesh.me)
+
 For questions, issues, or contributions, please open an issue in the repository.
 
 ---
