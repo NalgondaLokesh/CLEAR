@@ -70,18 +70,14 @@ CLEAR/
 
 ```mermaid
 flowchart TD
-    A[User Interface] --> B{Interface Choice}
-    B -->|React Web App| C[React Frontend]
-    B -->|Streamlit| D[Streamlit App]
-    C --> E[FastAPI Backend]
-    D --> F[Direct Model Access]
-    E --> G[Model Loader]
-    F --> G
-    G --> H[U-Net Generator]
-    H --> I[Cloud Removal Service]
-    I --> J[Image Processing]
-    J --> K[Processed Image]
-    K --> A
+    A[User Interface] --> B[React Frontend]
+    B --> C[FastAPI Backend]
+    C --> D[Model Loader]
+    D --> E[U-Net Generator]
+    E --> F[Cloud Removal Service]
+    F --> G[Image Processing]
+    G --> H[Processed Image]
+    H --> A
 ```
 
 ## Technology Stack

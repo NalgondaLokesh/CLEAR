@@ -1,0 +1,78 @@
+Generate a professional system architecture diagram for CLEAR (Cloud-Less Earth Observation & Reconstruction), an AI-powered cloud removal system for satellite imagery.
+
+## System Components to Include:
+
+### User Interface Layer (Top):
+- React.js Frontend (web browser icon)
+- Streamlit Interface (Python icon)
+- Show both as parallel entry points
+
+### Application Layer (Middle):
+- FastAPI Backend (server icon)
+- API Routes (api endpoints icon)
+- Pydantic Schemas (data validation icon)
+- CORS Middleware (security icon)
+
+### Business Logic Layer (Middle-Lower):
+- Cloud Removal Service (processing icon)
+- Model Loader (database/cache icon)
+- Image Processing Utils (image icon)
+
+### AI/ML Layer (Lower):
+- U-Net Generator (neural network icon)
+- PatchGAN Discriminator (network icon)
+- CUDA Acceleration (GPU icon)
+
+### Data Layer (Bottom):
+- Model Weights (.pth files icon)
+- Image Storage (folder icon)
+- Temporary Files (temp icon)
+
+## Data Flow:
+1. User uploads cloudy satellite image → React/Streamlit
+2. API request to FastAPI backend
+3. Model loads pre-trained weights
+4. Image preprocessing (resize, normalize)
+5. U-Net Generator inference
+6. Postprocessing (denormalize, format)
+7. Return processed image to frontend
+8. Display before/after comparison
+
+## Visual Style:
+- Modern, clean, professional design
+- Use a color scheme: Blue (#1f77b4), Teal (#00bfa5), Orange (#ff7f0e)
+- Rounded rectangles for components
+- Smooth curved arrows for data flow
+- Gradient backgrounds for layers
+- Clear, readable labels
+- Hierarchical layout (top-to-bottom flow)
+- Include icons/logos for each technology
+- Professional diagram suitable for technical documentation
+
+## Layout:
+- Divide into horizontal layers with clear labels
+- Use spacing to show separation between layers
+- Show bidirectional arrows where applicable
+- Include a legend for different types of components
+- Add a title at the top: "CLEAR System Architecture"
+- Add a subtitle: "Cloud-Less Earth Observation & Reconstruction"
+
+## Labels to Include:
+- "User Interface Layer" at top
+- "Application Layer (FastAPI)" 
+- "Business Logic Layer"
+- "AI/ML Layer (PyTorch)"
+- "Data Layer" at bottom
+- Component names inside each box
+- Technology names (React, FastAPI, PyTorch, etc.)
+- Arrow labels showing data flow (e.g., "HTTP API", "Model Inference", "Image Processing")
+
+## Additional Details:
+- Show GPU acceleration path with lightning bolt icon
+- Include model selection (RICE1, RICE2) branching
+- Show both single image and batch processing paths
+- Include metrics calculation step (PSNR, SSIM)
+- Add note about 256x256 image resolution
+- Show Git LFS for model storage
+
+Make the diagram visually appealing, easy to understand, and suitable for inclusion in a technical README or presentation.
